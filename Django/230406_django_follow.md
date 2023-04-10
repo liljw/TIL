@@ -173,5 +173,47 @@ if request.user.is_authenticated 밑에다가 작성해주자.
 
 ## 추가 기능들
 
-1. 
+1. 모든 사용자 명(게시글 목록/댓글 목록)을 프로필로 이동 가능한 링크로 만들기.
+    - 먼저, 인덱스 페이지에 있는 게시글 목록에 있는 작성자 이름에 프로필 링크를 만들어주자.
+        - `{{ article.title }}`를 a태그로 감싸주고, url은 `accounts:profile` 그리고 `article.user.username`도 넣어준다. 
+    - 그리고 article의 detail 페이지에서도 댓글 목록에 reply.user 값도 같이 넣어주고, 누르면 user의 profile로 이동하는 링크를 넣어주자. 
+
+2. 팔로우 버튼은 본인 프로필에서는 보이지 않게 하기.  
+    - accounts/profile.html로 가서 팔로우 버튼을 구현해 둔 form태그 위에 if문을 넣어준다. 
+        - `{% if profile_user != request.user %}`
+
+3. 본인이 본인 프로필 페이지에 들어갔을 경우에만 지금까지 '좋아요 한 게시글'을 볼 수 있게 하기.
+    - 마찬가지로 profile.html에서 좋아요 한 게시글 부분에 if문을 써준다. 
+        - `{% if profile_user == request.user %}`
+
+4. 팔로우 한 사람들만 볼 수 있는 피드(/feed/)만들기.
+    - 이 경우에는 조금 복잡한데, url, view함수와 html까지 만들어줘야하기 때문이다.
+    1. 먼저 피드는, blog/urls.py에 있는 것이 맞는 것 같다. 이동해서 url 패턴을 만들어주자. 
+        - `path('feed/', views.feed, name='feed')`
+    2. 이제 view함수를 작성해주자. 유저가 팔로우한 사람들의 게시글만 봐야하니, 현재 request.user의 stars의 게시글을 전부 가져와야한다.  
+    **그런데 `user.stars.article_set.all()`이라고 하면 에러가 난다!**  
+    *왜냐하면 user.stars가 여러개일수도 있기 때문이다! (그러면 article_set 적용 불가)*
+    따라서 이중 for문을 이용해서 먼저 stars를 한명씩 꺼내준다음, 그 star의 article_set에서 article을 또 for문으로 빼줘서 빈 리스트에 append 해줘야 한다. 
+    3. 이 리스트는 context로 녹여서 html에서 쓸 수 있게끔 만들어주자.
+    4. 로그인 한 사용자만 쓸 수 있고, method는 safe로 받아주는 데코레이터를 추가해주자.
+    - ```py
+        @login_required
+        @require_safe
+        def feed(request):
+            user = request.user
+            stars_postings = []
+            for star in user.stars.all():
+                for article in star.article_set.all():
+                    stars_postings.append(article)
+            return render(request, 'blog/feed.html', {
+                'stars_postings': stars_postings
+            })
+        ```
+    5. 이제 blog/templates/blog 안에 feed.html을 작성해주자.
+        - 파일 만든 후에 base.html이랑 연결해주자. 
+        - div와 ul, li 태그를 이용해서 for문으로 stars_articles에서 stars_article을 빼주고, article의 usename과 title을 빼줘서, 각각 username은 profile로 이동할 수 있는 a태그를, title은 blog detail로 이동하는 a태그를 걸어주자.
+    6. 마지막으로 _navbar.html에 feed 링크만 추가해주자!
+        - 로그인 한 사용자에게만 보이게끔, mypage 아래에다가 feed를 추가해주자.
+
+    
 
