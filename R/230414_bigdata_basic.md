@@ -44,7 +44,7 @@ mac OS에서 한글이 깨지는 현상은
 Sys.setlocale(category="LC_ALL", locale="ko_KR.UTF-8") 를 입력해주자.
 
 console창에서 source 창으로 커서 이동하는 단축키는 `ctrl+e` 이고,  
-console창 클리어 하는 단축키는 `ctrl+l`이다.  
+console창 클리어 하는 단축키는 `ctrl+l`이다. 
 
 -------
 
