@@ -108,7 +108,7 @@ apply() 함수는 *매트릭스나 데이터프레임에 있는 행들이나 열
 ### 여러 개의 값을 반환하는 경우
 
 함수는 일반적으로 하나의 값만 return한다.  
-만약 여러 개의 값을 반환하는 경우, `list()`로 여러 개의 결과 값을 하나로 묵어서 반환해주면 된다.  
+만약 여러 개의 값을 반환하는 경우, `list()`로 여러 개의 결과 값을 하나로 묶어서 반환해주면 된다.  
 
 `return(list(x=result1, y=result2))`  
 
@@ -141,7 +141,44 @@ which.min(score)
 
 **`which()`함수는 찾고자 하는 값의 *인덱스*를 알아내는 함수이다!**
 
-조건에 맞는 값을 추출하는 작업의 경우, which() 함수 말고 `subset()` 함수를 이용할 수도 있다.  
+조건에 맞는 값을 추출하는 작업의 경우, which() 함수 말고 `subset()` 함수를 이용할 수도 있다.   
+`subset(데이터셋, 조건)` 은 값 자체를 반환하고,  
+`which(조건)` 은 인덱스를 반환한다는 차이점이 있다. 
+
+
+---
+
+### p.279 문제풀이 코드
+
+```r
+array <- c(0,1)
+n <- 3
+
+while (n <= 20) {
+  len_temp <- length(array)
+  last_n <- array[len_temp]
+  last_n2 <- array[(len_temp)-1]
+  array[n] <- last_n2 + last_n
+  n <- n+1
+}
+array
+
+str(USArrests)
+head(USArrests)
+
+q12_1 <- USArrests %>% select(Murder, Assault, Rape) %>% apply(2, sum)
+q12_2 <- USArrests %>% select(Murder, Assault, Rape) %>% apply(2, mean)
+q12_3 <- USArrests[which.max(USArrests$Murder),] %>% row.names()
+q12_4 <- USArrests[which.min(USArrests$Assault),"Murder"]
+
+
+q12_1_2 <- apply(USArrests[c("Murder","Assault","Rape")], 2, sum)
+q12_2_2 <- apply(USArrests[c("Murder","Assault","Rape")], 2, mean)
+q12_3_2 <- USArrests %>% filter(Murder==max(Murder)) %>% row.names()
+q12_4_2 <- USArrests %>% filter(Assault==min(Assault)) %>% select(Murder)
+```
+
+
 
 
 
