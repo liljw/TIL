@@ -117,7 +117,9 @@ ggplot 명령문은 여러 개의 함수들을 연결해 사용하는 형태로 
 
 이 때, `ggplot()`의 첫번째 매개변수로 넣는 데이터셋은 **데이터프레임의 형태**만 가능하다!  
 
-### 막대그래프와 히스토그램
+---
+
+### 막대그래프
 
 ```r
 ggplot(df, aes(x=month,y=rain)) +
@@ -136,10 +138,97 @@ ggplot(df, aes(x=month,y=rain)) +
 - `fill="steelblue"` : 막대의 내부 색을 지정한다.
 
 그 외 3개의 함수들의 매개변수는 다음과 같다.
-- ggtitle("월 별 강수량") : 그래프의 제목을 지정한다.
-- theme(plot.title = element_text(size=25, face="bold", colour="steelblue")) : 지정된 그래프 제목의 폰트 크기, 색상 등을 지정한다.  
+- `ggtitle("월 별 강수량")` : 그래프의 제목을 지정한다.
+- `theme(plot.title = element_text(size=25, face="bold", colour="steelblue"))` : 지정된 그래프 제목의 폰트 크기, 색상 등을 지정한다.  
 이 경우 폰트 크기는 25, 폰트 스타일은 볼드로, 폰트의 색상은 어두운 파란색으로 지정한다.  
-- labs(x="월",y="강수량") : 
+- `labs(x="월",y="강수량")` : x축과 y축의 레이블 지정
+- `coord_flip()` : 막대를 가로로 표시하도록 지정한다.
+
+---
+
+### 히스토그램
+
+히스토그램은 `geom_histogram()` 함수를 이용하여 작성한다.  
+
+히스토그램은 연속형 숫자 데이터에 대해 일정 길이로 구간을 나눈 후,  
+각 구간에 속하는 데이터값이 몇 개 있는지 센다.  
+때문에 ggplot 함수의 aes 함수에는 x축만 넣어주면 된다!  
+
+또한, 그룹 별로 히스토그램을 작성하는 것도 가능하다.  
+aes 함수에 fill 값으로 그룹을 넣어주자.
+
+```r
+ggplot(iris, aes(x=Sepal.Width, fill=Species, color=Species)) +
+    geom_histogram(binwidth = 0.5, position = "dodge") +
+    theme(legend.position="top")
+```
+
+ggplot 함수의 aes 함수 부분의 매개변수는 아래와 같다.
+- `x = Sepal.Width` : 히스토그램을 작성할 대상 열 지정.
+- `fill = Species` : 히스토그램의 막대 내부를 채울 색 지정.   
+여기서의 그룹인 Species는 팩터 타입이므로 숫자 1,2,3으로 변환될 수 있다.  
+품종 별로 막대의 색이 다르게 채워진다.
+- `color = Species` : 히스토그램의 막대 윤곽선의 색을 지정한다.  
+
+geom_histogram() 함수의 매개변수는 아래와 같다.
+- `binwidth = 0.5` : 데이터의 구간을 0.5 간격으로 나눈다.
+- `position = "dodge"` : 이 히스토그램은 3개 품종의 히스토그램이 하나의 그래프 상에 작성된다.   
+동일 구간에 대해 3개의 막대가 작성되는데,  
+`position`은 동일 구간의 막대들을 어떻게 그릴 지를 지정한다.  
+`"dodge"`는 막대들을 겹치지 말고 병렬적으로 그리도록 지정한다.  
+- `legend.position="top"` : 범례의 위치 지정
+
+---
+
+### 산점도
+
+산점도는 `geom_point()` 함수를 이용해 작성한다.  
+
+```r
+ggplot(data=iris, aes(x=Petal.Length, y=Petal.Width, color=Species)) +
+    geom_point(size=3) + ggtitle("꽃잎의 길이와 폭") +
+    theme(plot.title = element_text(size=25, face="bold", color="blue"))
+```
+
+위 함수의 매개변수에 대한 설명은 아래와 같다.
+- `aes(color=Species)` : 점의 색상을 품종에 따라 다르게 하기 위한 옵션.
+- `geom_point(size=3)` : 점의 크기를 지정.
+
+점의 모양도 품종 별로 다르게 하려면 aes 함수에 `shape=Species`를 추가하면 된다.  
+
+---
+
+### 상자그림
+
+상자그림은 `geom_boxplot()` 함수를 이용해 작성한다.  
+
+상자그림을 그릴 때 주의할 점은,  
+상자그림을 그릴 대상 열을 지정할 때 ggplot의 aes() 함수에서  
+**매개변수 x가 아닌 y에 열을 지정해야 한다는 것이다!!**  
+
+만약 그룹 별로 상자그림을 나타내고 싶으면,  
+**그룹을 매개변수 x에 넣어준다!**
+
+```r
+ggplot(data=iris, aes(x=Species, y=Petal.Length, fill=Species)) +
+    geom_boxplot()
+```
+
+---
+
+### 선그래프
+
+선그래프는 `geom_line()` 함수를 이용해 작성한다.  
+
+```r
+ggplot(data=df, aes(x=year, y=cnt)) + geom_line(col="red")
+```
+
+
+
+
+
+
 
 
 
