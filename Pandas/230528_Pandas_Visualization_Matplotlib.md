@@ -1,4 +1,4 @@
-# Pandas - Visualization
+# Pandas - Visualization (1)
 
 Pandas와 함께 사용할 수 있는 시각화 패키지들에 대해 배워보자. 
 
