@@ -111,7 +111,7 @@ li = ul.findAll('li')
 ul.findAll('li')[2].text
 
 # class 속성값이 greet인 <ul> 태그 내의 모든 <li> 텍스트 추출
-lis = bs_obj.findAll('ul', {'class' : 'greet})
+lis = bs_obj.findAll('ul', {'class' : 'greet'})
 
 for li in lis:
     print(li.text)
